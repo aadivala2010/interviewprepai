@@ -1,6 +1,4 @@
-const GEMINI_API_KEY = "AIzaSyCRYJh9Kk6Pvsq3P9uV8naLMV2XcgYf2E4";
-const GEMINI_MODEL = "gemini-2.5-flash-lite";
-const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+const GEMINI_PROXY_ENDPOINT = "/api/gemini";
 const STORAGE_KEY = "interviewprep-sessions";
 let pdfjsLibPromise = null;
 let mammothPromise = null;
@@ -316,11 +314,10 @@ async function loadPdfJs() {
 async function callGemini({ prompt, schema }) {
   let response;
   try {
-    response = await fetch(GEMINI_ENDPOINT, {
+    response = await fetch(GEMINI_PROXY_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-goog-api-key": GEMINI_API_KEY,
       },
       body: JSON.stringify({
         contents: [{ role: "user", parts: [{ text: prompt }] }],
@@ -333,7 +330,7 @@ async function callGemini({ prompt, schema }) {
     });
   } catch (error) {
     throw new Error(
-      "Gemini could not be reached from this page. Open the app with start-interviewprep.bat or use http://127.0.0.1:4173, then try again."
+      "Gemini could not be reached from this page. Use the deployed Vercel app or a Vercel-backed local server, then try again."
     );
   }
 
