@@ -34,6 +34,11 @@ const els = {
   generateBtn: document.getElementById("generateBtn"),
   generationMessage: document.getElementById("generationMessage"),
   setupStatus: document.getElementById("setupStatus"),
+  railInterviewType: document.getElementById("railInterviewType"),
+  railDifficulty: document.getElementById("railDifficulty"),
+  railQuestionCount: document.getElementById("railQuestionCount"),
+  railRoleTitle: document.getElementById("railRoleTitle"),
+  railCompanyName: document.getElementById("railCompanyName"),
   questionTitle: document.getElementById("questionTitle"),
   questionCategory: document.getElementById("questionCategory"),
   progressText: document.getElementById("progressText"),
@@ -43,8 +48,15 @@ const els = {
   submitAnswerBtn: document.getElementById("submitAnswerBtn"),
   skipQuestionBtn: document.getElementById("skipQuestionBtn"),
   practiceMessage: document.getElementById("practiceMessage"),
+  practiceRoleName: document.getElementById("practiceRoleName"),
+  practiceCompanyName: document.getElementById("practiceCompanyName"),
+  practiceProgressMetric: document.getElementById("practiceProgressMetric"),
   overallReadiness: document.getElementById("overallReadiness"),
   reportSummary: document.getElementById("reportSummary"),
+  reportOverallMetric: document.getElementById("reportOverallMetric"),
+  reportAnsweredMetric: document.getElementById("reportAnsweredMetric"),
+  reportSkippedMetric: document.getElementById("reportSkippedMetric"),
+  reportTypeMetric: document.getElementById("reportTypeMetric"),
   individualScores: document.getElementById("individualScores"),
   strongAnswers: document.getElementById("strongAnswers"),
   weakAnswers: document.getElementById("weakAnswers"),
@@ -217,6 +229,36 @@ function buildResumeAnalysis(resumeText, jobDescription) {
 
 function renderResumeAnalysis(analysis) {
   return analysis;
+}
+
+function updateSetupRail() {
+  const draft = collectDraftSetup();
+  els.railInterviewType.textContent = draft.interviewType || "Mixed interview";
+  els.railDifficulty.textContent = draft.difficulty || "Moderate";
+  els.railQuestionCount.textContent = String(draft.questionCount || 8);
+  els.railRoleTitle.textContent = draft.jobTitle || "Target role not set";
+  els.railCompanyName.textContent = draft.companyName
+    ? `${draft.companyName} interview brief`
+    : "Add a company name to tailor the question set.";
+}
+
+function updatePracticeOverview(question) {
+  const setup = state.setup || collectDraftSetup();
+  els.practiceRoleName.textContent = setup.jobTitle || "Interview session";
+  els.practiceCompanyName.textContent = setup.companyName || "Not set";
+  els.practiceProgressMetric.textContent = `${state.currentQuestionIndex + 1} / ${state.questions.length}`;
+  if (question) {
+    els.questionCategory.textContent = question.category;
+  }
+}
+
+function updateReportMetrics(report) {
+  const answeredCount = state.responses.filter((item) => item.answerText && item.answerText.trim()).length;
+  const skippedCount = state.responses.filter((item) => item.skipped || !item.answerText || !item.answerText.trim()).length;
+  els.reportOverallMetric.textContent = `${report.overallReadinessScore}%`;
+  els.reportAnsweredMetric.textContent = String(answeredCount);
+  els.reportSkippedMetric.textContent = String(skippedCount);
+  els.reportTypeMetric.textContent = state.setup?.interviewType || "Mixed interview";
 }
 
 async function extractResumeText(file) {
@@ -645,10 +687,10 @@ function renderQuestion() {
   if (!question) return;
 
   els.questionTitle.textContent = `Question ${state.currentQuestionIndex + 1}`;
-  els.questionCategory.textContent = question.category;
   els.progressText.textContent = `${state.currentQuestionIndex + 1} / ${state.questions.length}`;
   els.questionText.textContent = question.question;
   els.questionGuide.textContent = question.strongAnswerIncludes;
+  updatePracticeOverview(question);
 
   const existingResponse = state.responses.find((item) => item.questionId === question.id);
   els.answerInput.value = existingResponse?.answerText || "";
@@ -660,6 +702,7 @@ function renderQuestion() {
 function renderReport(report) {
   els.overallReadiness.textContent = `Overall readiness ${report.overallReadinessScore}%`;
   els.reportSummary.textContent = report.summary;
+  updateReportMetrics(report);
   renderIndividualScores();
   renderList(els.strongAnswers, report.strongestAnswers, "No answers scored yet.");
   renderList(els.weakAnswers, report.weakestAnswers, "No weak answers flagged.");
@@ -793,6 +836,7 @@ function hydrateSession(session) {
   els.questionCount.value = session.setup.questionCount || 8;
 
   renderResumeAnalysis(state.resumeAnalysis);
+  updateSetupRail();
 
   if (state.finalReport) {
     renderReport(state.finalReport);
@@ -939,6 +983,7 @@ function resetApp() {
   els.questionCount.value = 8;
   els.generationMessage.textContent = "";
   renderResumeAnalysis(null);
+  updateSetupRail();
   setView("setupView");
 }
 
@@ -1003,6 +1048,7 @@ els.resumeFile.addEventListener("change", async (event) => {
 
 els.resumeText.addEventListener("input", () => {
   state.resumeText = els.resumeText.value;
+  updateSetupRail();
 });
 
 els.jobDescription.addEventListener("input", () => {
@@ -1011,7 +1057,14 @@ els.jobDescription.addEventListener("input", () => {
     state.resumeAnalysis = buildResumeAnalysis(resumeText, els.jobDescription.value.trim());
     renderResumeAnalysis(state.resumeAnalysis);
   }
+  updateSetupRail();
 });
+
+els.companyName.addEventListener("input", updateSetupRail);
+els.jobTitle.addEventListener("input", updateSetupRail);
+els.interviewType.addEventListener("change", updateSetupRail);
+els.difficulty.addEventListener("change", updateSetupRail);
+els.questionCount.addEventListener("input", updateSetupRail);
 
 els.generateBtn.addEventListener("click", handleGenerateQuestions);
 els.submitAnswerBtn.addEventListener("click", handleSubmitAnswer);
@@ -1079,3 +1132,4 @@ els.savedSessionsList.addEventListener("click", handleSavedSessionAction);
 els.savedSessionsPanelList.addEventListener("click", handleSavedSessionAction);
 
 renderResumeAnalysis(null);
+updateSetupRail();

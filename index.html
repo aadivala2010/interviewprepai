@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
@@ -15,12 +15,15 @@
   <body>
     <div class="app-shell">
       <header class="topbar">
-        <div>
-          <p class="eyebrow">Personalized mock interview coach</p>
-          <h1>InterviewPrep AI</h1>
-          <p class="subcopy">
-            Practice for one specific job using your resume, the role description, and AI coaching.
-          </p>
+        <div class="brand-block">
+          <div class="brand-mark">IP</div>
+          <div>
+            <p class="eyebrow">Personalized mock interview coach</p>
+            <h1>InterviewPrep AI</h1>
+            <p class="subcopy">
+              Practice for one specific job using your resume, the role description, and AI coaching.
+            </p>
+          </div>
         </div>
         <div class="topbar-actions">
           <button id="saveSessionBtn" class="secondary-btn" type="button">Save session</button>
@@ -32,6 +35,47 @@
       <main>
         <section id="setupView" class="view active">
           <div class="band setup-layout">
+            <aside class="workspace-rail">
+              <div class="rail-hero">
+                <p class="rail-label">Interview workspace</p>
+                <h2 class="rail-title">Build a role-specific practice loop.</h2>
+                <p class="rail-copy">
+                  Paste the job context, set the interview style, and we will turn it into a structured mock interview.
+                </p>
+              </div>
+
+              <div class="metric-strip">
+                <article class="metric-tile">
+                  <span class="metric-label">Mode</span>
+                  <strong id="railInterviewType" class="metric-value">Mixed interview</strong>
+                </article>
+                <article class="metric-tile">
+                  <span class="metric-label">Difficulty</span>
+                  <strong id="railDifficulty" class="metric-value">Moderate</strong>
+                </article>
+                <article class="metric-tile">
+                  <span class="metric-label">Questions</span>
+                  <strong id="railQuestionCount" class="metric-value">8</strong>
+                </article>
+              </div>
+
+              <div class="rail-panel">
+                <span class="metric-label">Current brief</span>
+                <h3 id="railRoleTitle" class="rail-panel-title">Target role not set</h3>
+                <p id="railCompanyName" class="rail-copy compact">Add a company name to tailor the question set.</p>
+              </div>
+
+              <div class="rail-panel">
+                <span class="metric-label">Session signal</span>
+                <ul class="rail-list">
+                  <li>Paste or upload a resume</li>
+                  <li>Add the full job description</li>
+                  <li>Choose the number of questions</li>
+                  <li>Answer everything, then review one final scorecard</li>
+                </ul>
+              </div>
+            </aside>
+
             <div class="panel input-panel">
               <div class="panel-header">
                 <div>
@@ -46,44 +90,46 @@
                 you choose to save a session on this device.
               </div>
 
-              <div class="resume-card">
-                <div class="resume-option-header">
-                  <div>
-                    <p class="panel-kicker">Option 1</p>
-                    <h3>Upload Resume</h3>
+              <div class="resume-grid">
+                <section class="surface-block">
+                  <div class="resume-option-header">
+                    <div>
+                      <p class="panel-kicker">Option 1</p>
+                      <h3>Upload resume</h3>
+                    </div>
+                    <span class="helper-text">PDF, DOCX, TXT</span>
                   </div>
-                  <span class="helper-text">PDF, DOCX, TXT</span>
-                </div>
-                <div id="uploadTab" class="tab-panel active always-open">
-                  <label class="field">
-                    <span>Resume file</span>
-                    <input id="resumeFile" type="file" accept=".pdf,.docx,.txt" />
-                  </label>
-                  <p id="fileMeta" class="helper-text">Accepted types: PDF, DOCX, TXT</p>
-                </div>
-
-                <div class="resume-divider"><span>or</span></div>
-
-                <div class="resume-option-header">
-                  <div>
-                    <p class="panel-kicker">Option 2</p>
-                    <h3>Paste Resume Text</h3>
+                  <div id="uploadTab" class="tab-panel active always-open">
+                    <label class="field">
+                      <span>Resume file</span>
+                      <input id="resumeFile" type="file" accept=".pdf,.docx,.txt" />
+                    </label>
+                    <p id="fileMeta" class="helper-text">Accepted types: PDF, DOCX, TXT</p>
                   </div>
-                  <span class="helper-text">No file upload required</span>
-                </div>
-                <div id="pasteTab" class="tab-panel active always-open">
-                  <label class="field">
-                    <span>Resume text</span>
-                    <textarea
-                      id="resumeText"
-                      rows="12"
-                      placeholder="Paste your resume here. This works even if you do not upload a file."
-                    ></textarea>
-                  </label>
-                </div>
+                </section>
+
+                <section class="surface-block">
+                  <div class="resume-option-header">
+                    <div>
+                      <p class="panel-kicker">Option 2</p>
+                      <h3>Paste resume text</h3>
+                    </div>
+                    <span class="helper-text">No file upload required</span>
+                  </div>
+                  <div id="pasteTab" class="tab-panel active always-open">
+                    <label class="field">
+                      <span>Resume text</span>
+                      <textarea
+                        id="resumeText"
+                        rows="12"
+                        placeholder="Paste your resume here. This works even if you do not upload a file."
+                      ></textarea>
+                    </label>
+                  </div>
+                </section>
               </div>
 
-              <div class="grid">
+              <div class="grid intake-grid">
                 <label class="field wide">
                   <span>Job description</span>
                   <textarea
@@ -137,6 +183,21 @@
 
         <section id="practiceView" class="view">
           <div class="band practice-layout">
+            <section class="practice-overview">
+              <article class="metric-tile active-metric">
+                <span class="metric-label">Current role</span>
+                <strong id="practiceRoleName" class="metric-value">Interview session</strong>
+              </article>
+              <article class="metric-tile">
+                <span class="metric-label">Company</span>
+                <strong id="practiceCompanyName" class="metric-value">Not set</strong>
+              </article>
+              <article class="metric-tile">
+                <span class="metric-label">Progress</span>
+                <strong id="practiceProgressMetric" class="metric-value">1 / 1</strong>
+              </article>
+            </section>
+
             <div class="panel question-panel">
               <div class="question-topline">
                 <div>
@@ -189,6 +250,25 @@
               </div>
               <p id="reportSummary" class="subcopy"></p>
             </div>
+
+            <section class="report-metrics">
+              <article class="metric-tile active-metric">
+                <span class="metric-label">Overall score</span>
+                <strong id="reportOverallMetric" class="metric-value">--</strong>
+              </article>
+              <article class="metric-tile">
+                <span class="metric-label">Questions answered</span>
+                <strong id="reportAnsweredMetric" class="metric-value">0</strong>
+              </article>
+              <article class="metric-tile">
+                <span class="metric-label">Questions skipped</span>
+                <strong id="reportSkippedMetric" class="metric-value">0</strong>
+              </article>
+              <article class="metric-tile">
+                <span class="metric-label">Session type</span>
+                <strong id="reportTypeMetric" class="metric-value">Mixed interview</strong>
+              </article>
+            </section>
 
             <div class="report-grid">
               <div class="panel report-card wide-card">
