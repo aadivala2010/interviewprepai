@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InterviewPrep AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Personalized mock interview coach</p>
+          <h1>InterviewPrep AI</h1>
+          <p class="subcopy">
+            Practice for one specific job using your resume, the role description, and AI coaching.
+          </p>
+        </div>
+        <div class="topbar-actions">
+          <button id="saveSessionBtn" class="secondary-btn" type="button">Save session</button>
+          <button id="loadSessionBtn" class="ghost-btn" type="button">Load saved</button>
+        </div>
+      </header>
+      <p id="sessionMessage" class="helper-text session-message"></p>
+
+      <main>
+        <section id="setupView" class="view active">
+          <div class="band setup-layout">
+            <div class="panel input-panel">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-kicker">Step 1</p>
+                  <h2>Interview setup</h2>
+                </div>
+                <span id="setupStatus" class="status-pill">Ready</span>
+              </div>
+
+              <div class="privacy-banner">
+                Resume and job description content may contain personal information. Data stays in your browser unless
+                you choose to save a session on this device.
+              </div>
+
+              <div class="resume-card">
+                <div class="resume-option-header">
+                  <div>
+                    <p class="panel-kicker">Option 1</p>
+                    <h3>Upload Resume</h3>
+                  </div>
+                  <span class="helper-text">PDF, DOCX, TXT</span>
+                </div>
+                <div id="uploadTab" class="tab-panel active always-open">
+                  <label class="field">
+                    <span>Resume file</span>
+                    <input id="resumeFile" type="file" accept=".pdf,.docx,.txt" />
+                  </label>
+                  <p id="fileMeta" class="helper-text">Accepted types: PDF, DOCX, TXT</p>
+                </div>
+
+                <div class="resume-divider"><span>or</span></div>
+
+                <div class="resume-option-header">
+                  <div>
+                    <p class="panel-kicker">Option 2</p>
+                    <h3>Paste Resume Text</h3>
+                  </div>
+                  <span class="helper-text">No file upload required</span>
+                </div>
+                <div id="pasteTab" class="tab-panel active always-open">
+                  <label class="field">
+                    <span>Resume text</span>
+                    <textarea
+                      id="resumeText"
+                      rows="12"
+                      placeholder="Paste your resume here. This works even if you do not upload a file."
+                    ></textarea>
+                  </label>
+                </div>
+              </div>
+
+              <div class="grid">
+                <label class="field wide">
+                  <span>Job description</span>
+                  <textarea
+                    id="jobDescription"
+                    rows="12"
+                    placeholder="Paste the full job description here."
+                  ></textarea>
+                </label>
+                <label class="field">
+                  <span>Employer / company</span>
+                  <input id="companyName" type="text" placeholder="Example: Google" />
+                </label>
+                <label class="field">
+                  <span>Job title</span>
+                  <input id="jobTitle" type="text" placeholder="Example: Software Engineer Intern" />
+                </label>
+                <label class="field">
+                  <span>Interview type</span>
+                  <select id="interviewType">
+                    <option>Mixed interview</option>
+                    <option>Behavioral</option>
+                    <option>Technical</option>
+                    <option>HR</option>
+                    <option>Final round</option>
+                    <option>Internship</option>
+                    <option>Entry-level</option>
+                    <option>Role-specific</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>Difficulty</span>
+                  <select id="difficulty">
+                    <option>Moderate</option>
+                    <option>Easy</option>
+                    <option>Hard</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>Number of questions</span>
+                  <input id="questionCount" type="number" min="3" max="15" value="8" />
+                </label>
+              </div>
+
+              <div class="actions-row">
+                <button id="generateBtn" class="primary-btn" type="button">Generate Questions</button>
+                <span id="generationMessage" class="helper-text"></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="practiceView" class="view">
+          <div class="band practice-layout">
+            <div class="panel question-panel">
+              <div class="question-topline">
+                <div>
+                  <p class="panel-kicker">Practice mode</p>
+                  <h2 id="questionTitle">Question 1</h2>
+                </div>
+                <div class="progress-cluster">
+                  <span id="questionCategory" class="status-pill">Category</span>
+                  <span id="progressText" class="helper-text">1 / 1</span>
+                </div>
+              </div>
+
+              <div class="question-body">
+                <p id="questionText" class="question-text"></p>
+                <div class="meta-grid single-meta">
+                  <div>
+                    <span class="meta-label">A strong answer should include</span>
+                    <p id="questionGuide" class="meta-copy"></p>
+                  </div>
+                </div>
+              </div>
+
+              <label class="field">
+                <span>Your answer</span>
+                <textarea
+                  id="answerInput"
+                  rows="10"
+                  placeholder="Type your answer here. Be honest and specific."
+                ></textarea>
+              </label>
+
+              <div class="actions-row">
+                <button id="submitAnswerBtn" class="primary-btn" type="button">Save Answer & Continue</button>
+                <button id="skipQuestionBtn" class="secondary-btn" type="button">Skip Question</button>
+              </div>
+              <p id="practiceMessage" class="helper-text practice-message"></p>
+            </div>
+          </div>
+        </section>
+
+        <section id="reportView" class="view">
+          <div class="band report-layout">
+            <div class="panel report-hero">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-kicker">Final interview report</p>
+                  <h2 id="overallReadiness">Overall readiness --</h2>
+                </div>
+                <button id="restartBtn" class="secondary-btn" type="button">Start New Session</button>
+              </div>
+              <p id="reportSummary" class="subcopy"></p>
+            </div>
+
+            <div class="report-grid">
+              <div class="panel report-card wide-card">
+                <h3>Individual question scores</h3>
+                <ul id="individualScores" class="bullet-list"></ul>
+              </div>
+              <div class="panel report-card">
+                <h3>Strongest answers</h3>
+                <ul id="strongAnswers" class="bullet-list"></ul>
+              </div>
+              <div class="panel report-card">
+                <h3>Weakest answers</h3>
+                <ul id="weakAnswers" class="bullet-list"></ul>
+              </div>
+              <div class="panel report-card">
+                <h3>Common mistakes</h3>
+                <ul id="commonMistakes" class="bullet-list"></ul>
+              </div>
+              <div class="panel report-card">
+                <h3>Best resume strengths</h3>
+                <ul id="resumeStrengths" class="bullet-list"></ul>
+              </div>
+              <div class="panel report-card">
+                <h3>Skills to review</h3>
+                <ul id="skillsToReview" class="bullet-list"></ul>
+              </div>
+              <div class="panel report-card">
+                <h3>Questions to revisit</h3>
+                <ul id="retryQuestions" class="bullet-list"></ul>
+              </div>
+              <div class="panel report-card wide-card">
+                <h3>Gaps vs job description</h3>
+                <ul id="jobGaps" class="bullet-list"></ul>
+              </div>
+              <div class="panel report-card wide-card">
+                <h3>Practice plan</h3>
+                <ul id="practicePlan" class="bullet-list"></ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="savedSessionsDialog">
+      <div class="dialog-header">
+        <h3>Saved sessions</h3>
+        <button id="closeDialogBtn" class="ghost-btn" type="button">Close</button>
+      </div>
+      <div id="savedSessionsList" class="saved-list"></div>
+    </dialog>
+
+    <section id="savedSessionsPanel" class="panel saved-panel hidden">
+      <div class="dialog-header">
+        <h3>Saved sessions</h3>
+        <button id="closeSavedPanelBtn" class="ghost-btn" type="button">Close</button>
+      </div>
+      <div id="savedSessionsPanelList" class="saved-list"></div>
+    </section>
+
+    <script defer src="./app.js"></script>
+  </body>
+</html>
